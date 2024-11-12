@@ -1,12 +1,20 @@
-// PersistenceController.swift - Yeni dosya oluşturun
+//
+//  PersistenceController.swift
+//  emrechat
+//
+//  Created by Emre Aşcı on 12.11.2024.
+//
+
+
 import CoreData
 
 struct PersistenceController {
-    static let shared = PersistenceController()
+    static let shared = PersistenceController() // Singleton instance
+    
     let container: NSPersistentContainer
     
     init() {
-        container = NSPersistentContainer(name: "ChatMessage") // ChatMessage.xcdatamodeld dosyanızın adı
+        container = NSPersistentContainer(name: "ChatMessage")
         
         container.loadPersistentStores { description, error in
             if let error = error {

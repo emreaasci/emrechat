@@ -11,7 +11,8 @@ import SwiftUI
 struct emrechatApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView(currentUserId: "user1", recipientId: "user2")
+                            .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
         }
     }
 }
