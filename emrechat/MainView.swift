@@ -1,3 +1,14 @@
+//
+//  MainView.swift
+//  emrechat
+//
+//  Created by Emre Aşcı on 12.11.2024.
+//
+
+
+import Foundation
+import SwiftUI
+
 // MainView.swift
 struct MainView: View {
     @StateObject private var viewModel: MainViewModel

@@ -4,10 +4,33 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>emrechat.xcscheme_^#shared#^_</key>
+		<key>Copy of emrechat.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>0</integer>
+		</dict>
+		<key>emrechat.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>1</integer>
+		</dict>
+	</dict>
+	<key>SuppressBuildableAutocreation</key>
+	<dict>
+		<key>27938E592CE3329600547778</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>27938E692CE3329800547778</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>27938E732CE3329800547778</key>
+		<dict>
+			<key>primary</key>
+			<true/>
 		</dict>
 	</dict>
 </dict>

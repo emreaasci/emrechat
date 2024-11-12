@@ -1,3 +1,12 @@
+//
+//  MessageInputView.swift
+//  emrechat
+//
+//  Created by Emre Aşcı on 12.11.2024.
+//
+
+import SwiftUI
+
 // MessageInputView.swift
 struct MessageInputView: View {
     @Binding var text: String

@@ -11,7 +11,7 @@ import SwiftUI
 struct emrechatApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView(currentUserId: "user1", recipientId: "user2")
+            MainView(currentUserId: "user2") // Giriş yapan kullanıcının ID'si
                             .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
         }
     }

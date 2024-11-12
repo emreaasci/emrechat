@@ -1,3 +1,12 @@
+//
+//  User.swift
+//  emrechat
+//
+//  Created by Emre Aşcı on 12.11.2024.
+//
+
+import Foundation
+
 // User.swift
 struct User: Identifiable {
     let id: String

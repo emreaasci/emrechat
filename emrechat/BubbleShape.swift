@@ -1,3 +1,13 @@
+//
+//  BubbleShape.swift
+//  emrechat
+//
+//  Created by Emre Aşcı on 12.11.2024.
+//
+
+import SwiftUI
+
+
 // BubbleShape.swift
 struct BubbleShape: Shape {
     let isFromCurrentUser: Bool

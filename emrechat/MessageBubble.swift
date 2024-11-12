@@ -1,3 +1,14 @@
+//
+//  MessageBubble.swift
+//  emrechat
+//
+//  Created by Emre Aşcı on 12.11.2024.
+//
+
+
+import SwiftUI
+import Foundation
+
 struct MessageBubble: View {
     let message: ChatMessage
     

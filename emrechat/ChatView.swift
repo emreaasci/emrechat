@@ -10,19 +10,20 @@ import Foundation
 import SwiftUI
 
 
-struct ContentView: View {
+struct ChatView: View {
     let currentUserId: String
     let recipientId: String
+    let recipientName: String
     
     @Environment(\.managedObjectContext) private var viewContext
     @StateObject private var viewModel: ChatViewModel
     @State private var messageText = ""
     
-    init(currentUserId: String, recipientId: String) {
+    init(currentUserId: String, recipientId: String, recipientName: String) {
         self.currentUserId = currentUserId
         self.recipientId = recipientId
+        self.recipientName = recipientName
         
-        // ViewContext'i shared instance'dan alıyoruz
         _viewModel = StateObject(wrappedValue: ChatViewModel(
             currentUserId: currentUserId,
             recipientId: recipientId,
@@ -33,26 +34,14 @@ struct ContentView: View {
     var body: some View {
         VStack {
             ScrollViewReader { proxy in
-                List(viewModel.messages, id: \.id) { message in
-                    HStack {
-                        if message.isFromCurrentUser {
-                            Spacer()
-                            Text(message.content)
-                                .padding()
-                                .background(Color.blue)
-                                .foregroundColor(.white)
-                                .cornerRadius(10)
-                        } else {
-                            Text(message.content)
-                                .padding()
-                                .background(Color.gray.opacity(0.3))
-                                .cornerRadius(10)
-                            Spacer()
+                ScrollView {
+                    LazyVStack(spacing: 12) {
+                        ForEach(viewModel.messages, id: \.id) { message in
+                            MessageBubble(message: message)
                         }
                     }
-                    .listRowSeparator(.hidden)
+                    .padding(.horizontal)
                 }
-                .listStyle(PlainListStyle())
                 .onChange(of: viewModel.messages.count) { _ in
                     if let lastMessage = viewModel.messages.last {
                         withAnimation {
@@ -62,20 +51,14 @@ struct ContentView: View {
                 }
             }
             
-            HStack {
-                TextField("Mesaj...", text: $messageText)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .padding(.horizontal)
-                
-                Button("Gönder") {
+            MessageInputView(text: $messageText) {
+                if !messageText.isEmpty {
                     viewModel.sendMessage(messageText)
                     messageText = ""
                 }
-                .padding(.trailing)
-                .disabled(messageText.isEmpty)
             }
-            .padding(.vertical)
         }
-        .navigationTitle("Sohbet")
+        .navigationTitle(recipientName)
+        .navigationBarTitleDisplayMode(.inline)
     }
 }

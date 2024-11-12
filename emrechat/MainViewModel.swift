@@ -1,3 +1,14 @@
+//
+//  MainViewModel.swift
+//  emrechat
+//
+//  Created by Emre Aşcı on 12.11.2024.
+//
+
+
+import Foundation
+import SwiftUI
+
 // MainViewModel.swift
 class MainViewModel: ObservableObject {
     @Published var users: [User] = []
