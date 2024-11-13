@@ -16,8 +16,8 @@ class ChatViewModel: ObservableObject {
     private let socketManager = SocketManager()
     let currentUserId: String
     let recipientId: String
-    
     private let context: NSManagedObjectContext
+    
     
     init(currentUserId: String, recipientId: String, context: NSManagedObjectContext) {
         self.currentUserId = currentUserId
