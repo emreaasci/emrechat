@@ -38,6 +38,7 @@ class ChatViewModel: ObservableObject {
         socketManager.connect(userId: currentUserId)
     }
     
+    
     private func loadMessages() {
         let request = NSFetchRequest<CDChatMessage>(entityName: "CDChatMessage")
         
