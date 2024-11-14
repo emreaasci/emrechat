@@ -1,13 +1,9 @@
-//
 //  PersistenceController.swift
 //  emrechat
 //
 //  Created by Emre Aşcı on 12.11.2024.
 //
-
-
 import CoreData
-
 struct PersistenceController {
     static let shared = PersistenceController() // Singleton instance
     

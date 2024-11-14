@@ -1,14 +1,9 @@
-//
 //  UserRow.swift
 //  emrechat
 //
 //  Created by Emre Aşcı on 12.11.2024.
 //
-
-
 import SwiftUI
-
-
 // UserRow.swift
 struct UserRow: View {
     let user: User

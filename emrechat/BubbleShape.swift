@@ -4,10 +4,7 @@
 //
 //  Created by Emre Aşcı on 12.11.2024.
 //
-
 import SwiftUI
-
-
 struct BubbleShape: Shape {
     let isFromCurrentUser: Bool
     

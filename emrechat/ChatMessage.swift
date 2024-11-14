@@ -1,13 +1,10 @@
-//
 //  ChatMessage.swift
 //  emrechat
 //
 //  Created by Emre Aşcı on 12.11.2024.
 //
-
 // ChatMessage.swift
 import Foundation
-
 struct ChatMessage: Identifiable, Codable, Equatable {
     let id: String
     let type: String

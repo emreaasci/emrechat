@@ -1,12 +1,9 @@
-//
 //  MessageBubble.swift
 //  emrechat
 //
 //  Created by Emre Aşcı on 12.11.2024.
 //
-
 import SwiftUI
-
 struct MessageBubble: View {
     let message: ChatMessage
     
@@ -30,7 +27,7 @@ struct MessageBubble: View {
                     Image(systemName: "checkmark")
                     Image(systemName: "checkmark")
                 }
-                .foregroundColor(.blue)
+                .foregroundColor(.red)
             }
         }
         .font(.caption2)
