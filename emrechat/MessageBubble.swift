@@ -5,12 +5,38 @@
 //  Created by Emre Aşcı on 12.11.2024.
 //
 
-
 import SwiftUI
-import Foundation
 
 struct MessageBubble: View {
     let message: ChatMessage
+    
+    private func statusIcon(for status: ChatMessage.MessageStatus) -> some View {
+        Group {
+            switch status {
+            case .sent:
+                // Tek gri tik
+                Image(systemName: "checkmark")
+                    .foregroundColor(.gray)
+            case .delivered:
+                // İki gri tik
+                HStack(spacing: -4) {
+                    Image(systemName: "checkmark")
+                    Image(systemName: "checkmark")
+                }
+                .foregroundColor(.gray)
+            case .read:
+                // İki mavi tik
+                HStack(spacing: -4) {
+                    Image(systemName: "checkmark")
+                    Image(systemName: "checkmark")
+                }
+                .foregroundColor(.blue)
+            }
+        }
+        .font(.caption2)
+        .id("\(message.id)-\(status.rawValue)") // Force view güncelleme için
+        .animation(.easeInOut, value: status)
+    }
     
     var body: some View {
         HStack {
@@ -23,9 +49,13 @@ struct MessageBubble: View {
                         .foregroundColor(.white)
                         .clipShape(BubbleShape(isFromCurrentUser: true))
                     
-                    Text(timeString(from: message.timestamp))
-                        .font(.caption2)
-                        .foregroundColor(.gray)
+                    HStack(spacing: 4) {
+                        Text(timeString(from: message.timestamp))
+                            .font(.caption2)
+                            .foregroundColor(.gray)
+                        statusIcon(for: message.status)
+                            .id("\(message.id)-status") // Force view güncelleme için
+                    }
                 }
             } else {
                 VStack(alignment: .leading, spacing: 2) {

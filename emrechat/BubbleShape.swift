@@ -8,7 +8,6 @@
 import SwiftUI
 
 
-// BubbleShape.swift
 struct BubbleShape: Shape {
     let isFromCurrentUser: Bool
     

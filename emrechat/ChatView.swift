@@ -9,7 +9,6 @@
 import Foundation
 import SwiftUI
 
-
 struct ChatView: View {
     let currentUserId: String
     let recipientId: String
@@ -18,6 +17,7 @@ struct ChatView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @StateObject private var viewModel: ChatViewModel
     @State private var messageText = ""
+    @State private var messagesCount: Int = 0  // Mesaj sayısını takip etmek için
     
     init(currentUserId: String, recipientId: String, recipientName: String) {
         self.currentUserId = currentUserId
@@ -36,17 +36,21 @@ struct ChatView: View {
             ScrollViewReader { proxy in
                 ScrollView {
                     LazyVStack(spacing: 12) {
-                        ForEach(viewModel.messages, id: \.id) { message in
+                        ForEach(viewModel.messages) { message in
                             MessageBubble(message: message)
+                                .id(message.id)
                         }
                     }
                     .padding(.horizontal)
                 }
-                .onChange(of: viewModel.messages.count) { _ in
-                    if let lastMessage = viewModel.messages.last {
-                        withAnimation {
-                            proxy.scrollTo(lastMessage.id, anchor: .bottom)
+                .onChange(of: viewModel.messages.count) { newCount in
+                    if newCount > messagesCount {
+                        if let lastMessage = viewModel.messages.last {
+                            withAnimation {
+                                proxy.scrollTo(lastMessage.id, anchor: .bottom)
+                            }
                         }
+                        messagesCount = newCount
                     }
                 }
             }

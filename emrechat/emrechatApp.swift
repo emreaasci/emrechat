@@ -13,6 +13,9 @@ struct emrechatApp: App {
         WindowGroup {
             MainView(currentUserId: "user2")
                             .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
+            
+            
+            
         }
     }
 }

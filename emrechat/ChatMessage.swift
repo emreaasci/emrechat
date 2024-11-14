@@ -5,30 +5,37 @@
 //  Created by Emre Aşcı on 12.11.2024.
 //
 
+// ChatMessage.swift
 import Foundation
 
-
-// ChatMessage.swift - init metodunu güncelle
-struct ChatMessage: Identifiable, Codable {
+struct ChatMessage: Identifiable, Codable, Equatable {
     let id: String
     let type: String
     let from: String
     let to: String
     let content: String
     let timestamp: Date
+    var status: MessageStatus
     
     var isFromCurrentUser: Bool {
         UserDefaults.standard.string(forKey: "currentUserId") == from
     }
     
-    // CoreData için
+    enum MessageStatus: String, Codable, Equatable {
+        case sent = "sent"
+        case delivered = "delivered"
+        case read = "read"
+    }
+    
     init?(from cdMessage: CDChatMessage) {
         guard let id = cdMessage.id,
               let type = cdMessage.type,
               let from = cdMessage.fromUserId,
               let to = cdMessage.toUserId,
               let content = cdMessage.content,
-              let timestamp = cdMessage.timestamp else {
+              let timestamp = cdMessage.timestamp,
+              let statusRaw = cdMessage.status,
+              let status = MessageStatus(rawValue: statusRaw) else {
             return nil
         }
         
@@ -38,20 +45,22 @@ struct ChatMessage: Identifiable, Codable {
         self.to = to
         self.content = content
         self.timestamp = timestamp
+        self.status = status
     }
     
-    // Doğrudan init
     init(id: String = UUID().uuidString,
          type: String = "message",
          from: String,
          to: String,
          content: String,
-         timestamp: Date = Date()) {
+         timestamp: Date = Date(),
+         status: MessageStatus = .sent) {
         self.id = id
         self.type = type
         self.from = from
         self.to = to
         self.content = content
         self.timestamp = timestamp
+        self.status = status
     }
 }

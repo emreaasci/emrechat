@@ -6,18 +6,14 @@
 //
 
 import SwiftUI
-import Foundation
 import CoreData
 
-
-// ChatViewModel.swift
 class ChatViewModel: ObservableObject {
     @Published var messages: [ChatMessage] = []
     private let socketManager = SocketManager()
     let currentUserId: String
     let recipientId: String
     private let context: NSManagedObjectContext
-    
     
     init(currentUserId: String, recipientId: String, context: NSManagedObjectContext) {
         self.currentUserId = currentUserId
@@ -30,22 +26,34 @@ class ChatViewModel: ObservableObject {
         
         socketManager.onReceive = { [weak self] message in
             DispatchQueue.main.async {
+                print("Yeni mesaj alındı: \(message.id)")
                 self?.saveMessage(message)
                 self?.messages.append(message)
+                
+                if !message.isFromCurrentUser {
+                    print("Karşı taraftan gelen mesaj okundu olarak işaretleniyor: \(message.id)")
+                    self?.socketManager.sendMessageRead(messageId: message.id, from: message.from)
+                }
+                
+                self?.objectWillChange.send()
+            }
+        }
+        
+        socketManager.onMessageStatusUpdate = { [weak self] messageId, status in
+            DispatchQueue.main.async {
+                print("Mesaj durumu güncelleme bildirimi alındı - ID: \(messageId), Status: \(status.rawValue)")
+                self?.updateMessageStatus(messageId: messageId, status: status)
             }
         }
         
         socketManager.connect(userId: currentUserId)
     }
     
-    
     private func loadMessages() {
         let request = NSFetchRequest<CDChatMessage>(entityName: "CDChatMessage")
-        
         let predicate = NSPredicate(format: "(fromUserId == %@ AND toUserId == %@) OR (fromUserId == %@ AND toUserId == %@)",
                                   currentUserId, recipientId, recipientId, currentUserId)
         request.predicate = predicate
-        
         request.sortDescriptors = [NSSortDescriptor(keyPath: \CDChatMessage.timestamp, ascending: true)]
         
         do {
@@ -67,31 +75,62 @@ class ChatViewModel: ObservableObject {
         newMessage.fromUserId = message.from
         newMessage.toUserId = message.to
         newMessage.timestamp = message.timestamp
+        newMessage.status = message.status.rawValue
         
         do {
             try context.save()
-            print("Mesaj kaydedildi: \(message.content)")
+            print("Mesaj kaydedildi - ID: \(message.id)")
         } catch {
             print("Mesaj kaydetme hatası: \(error)")
         }
     }
     
-    func sendMessage(_ content: String) {
-        let message = ChatMessage(
-            from: currentUserId,
-            to: recipientId,
-            content: content
-        )
+    private func updateMessageStatus(messageId: String, status: SocketManager.MessageStatus) {
+        print("Mesaj durumu güncelleniyor - ID: \(messageId), Yeni Durum: \(status.rawValue)")
         
+        if let index = messages.firstIndex(where: { $0.id == messageId }) {
+            var updatedMessage = messages[index]
+            updatedMessage.status = ChatMessage.MessageStatus(rawValue: status.rawValue) ?? .sent
+            messages[index] = updatedMessage
+            
+            // CoreData güncelleme
+            let request = NSFetchRequest<CDChatMessage>(entityName: "CDChatMessage")
+            request.predicate = NSPredicate(format: "id == %@", messageId)
+            
+            do {
+                let results = try context.fetch(request)
+                if let messageToUpdate = results.first {
+                    messageToUpdate.status = status.rawValue
+                    try context.save()
+                    print("CoreData'da mesaj durumu güncellendi - ID: \(messageId)")
+                }
+            } catch {
+                print("CoreData güncelleme hatası:", error)
+            }
+            
+            objectWillChange.send()
+        }
+    }
+    
+    func sendMessage(_ content: String) {
+        // Socket üzerinden gönder
         socketManager.sendMessage(
             from: currentUserId,
             to: recipientId,
             content: content
         )
-        
-        DispatchQueue.main.async {
-            self.saveMessage(message)
-            self.messages.append(message)
+    }
+    
+    func printDebugInfo() {
+        print("\n--- Debug Bilgileri ---")
+        print("Toplam Mesaj Sayısı: \(messages.count)")
+        for message in messages {
+            print("ID: \(message.id)")
+            print("Content: \(message.content)")
+            print("Status: \(message.status.rawValue)")
+            print("From: \(message.from)")
+            print("To: \(message.to)")
+            print("-------------------")
         }
     }
 }
