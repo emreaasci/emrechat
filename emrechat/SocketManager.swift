@@ -23,7 +23,7 @@ class SocketManager {
     
     func connect(userId: String) {
         self.userId = userId
-        guard let url = URL(string: "ws://172.10.40.66:8070") else { return }
+        guard let url = URL(string: "ws://172.10.40.79:8070") else { return }
         
         let session = URLSession(configuration: .default)
         webSocket = session.webSocketTask(with: url)
